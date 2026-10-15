@@ -1,0 +1,42 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Cham problem</title>
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{background:#0d1210;color:#e8efe9;font:32px/1.4 "Inter",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;position:relative}
+body.clear{background:transparent}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.g{color:#7fd35a}.m{color:#8a9a90}.r{color:#ff8a65}
+.fade{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
+.fade.on{opacity:1;transform:none}
+.hint{position:absolute;right:24px;bottom:16px;font-size:16px;color:#4a5a50}
+body.rec .hint{display:none}
+
+.w{width:1500px}h2{font-size:64px;margin-bottom:40px}
+.code{white-space:pre;height:200px;overflow:hidden;color:#4a5a50;font-size:20px;line-height:1.2;border-left:4px solid #333;padding-left:20px;margin-bottom:40px;position:relative}
+.cards{display:flex;gap:30px}.card{flex:1;background:#151c18;border-radius:16px;padding:32px}
+.big{font-size:84px;font-weight:700}.src{font-size:22px;color:#8a9a90;margin-top:10px}
+</style></head><body>
+<div class="w"><h2 class="fade">Ask a chatbot for a backend. Get 400 lines.</h2>
+<div class="code mono fade" id="code"></div>
+<div class="cards"><div class="card fade"><div class="big g">+48%</div><div class="big r">&minus;17%</div><p>Practice grades vs. exam grades after GPT-4 help was taken away.</p><div class="src">Bastani et al., PNAS 2025</div></div>
+<div class="card fade"><div class="big r">19% slower</div><p>Experienced developers with AI tools. They expected 24% faster and believed they were 20% faster.</p><div class="src">Becker et al., METR 2025</div></div>
+<div class="card fade"><div class="big">You paste the error back.</div><p>Nothing in your head to hold on to.</p></div></div></div>
+<div class="hint">click or R = replay &middot; T = transparent &middot; H = hide hint</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let run=0;
+async function type(el,text,ms=35,id){el.textContent="";for(const c of text){if(id!==run)return;el.textContent+=c;await sleep(ms)}}
+async function reveal(sel,gap=500,id){for(const e of $$(sel)){if(id!==run)return;e.classList.add("on");await sleep(gap)}}
+function reset(){$$(".fade").forEach(e=>e.classList.remove("on"))}
+async function play(){const id=++run;reset();await sleep(200);await scene(id)}
+addEventListener("click",play);
+addEventListener("keydown",e=>{const k=e.key.toLowerCase();if(k==="r")play();if(k==="t")document.body.classList.toggle("clear");if(k==="h")document.body.classList.toggle("rec")});
+if(location.hash.includes("clear"))document.body.classList.add("clear");
+if(location.hash.includes("rec"))document.body.classList.add("rec");
+const junk=["import express from 'express'","const prisma = new PrismaClient()","app.use(cors({origin:process.env.ORIGIN}))","FROM node:20-alpine","DATABASE_URL=postgres://...","export const OrderSchema = z.object({","await prisma.$transaction(async (tx) => {","module.exports = { webpack: { alias: {} } }","\"scripts\": { \"migrate\": \"prisma migrate dev\" }"];
+async function scene(id){const c=$("#code");c.textContent="";$$(".fade")[0].classList.add("on");$$(".fade")[1].classList.add("on");
+for(let i=0;i<40&&id===run;i++){c.textContent+=junk[i%junk.length]+"\n";c.scrollTop=1e5;await sleep(70)}
+for(const e of $$(".card")){if(id!==run)return;e.classList.add("on");await sleep(900)}}
+play();
+</script></body></html>

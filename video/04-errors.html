@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Cham errors</title>
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{background:#0d1210;color:#e8efe9;font:32px/1.4 "Inter",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;position:relative}
+body.clear{background:transparent}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.g{color:#7fd35a}.m{color:#8a9a90}.r{color:#ff8a65}
+.fade{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
+.fade.on{opacity:1;transform:none}
+.hint{position:absolute;right:24px;bottom:16px;font-size:16px;color:#4a5a50}
+body.rec .hint{display:none}
+
+.w{width:1600px}h2{font-size:52px;margin-bottom:40px}
+.t{background:#070a08;border-radius:14px;padding:26px 32px;margin-bottom:24px;font-size:28px;min-height:130px}
+.t .p{color:#8a9a90}.t .lang{display:inline-block;width:70px;color:#7fd35a}
+</style></head><body>
+<div class="w"><h2>The same mistake, three languages</h2>
+<div class="t mono"><div class="p">$ CHAM_LANG=en cham app.cham</div><span class="lang">en</span><span id="e0"></span></div>
+<div class="t mono"><div class="p">$ CHAM_LANG=uk cham app.cham</div><span class="lang">uk</span><span id="e1"></span></div>
+<div class="t mono"><div class="p">$ CHAM_LANG=ru cham app.cham</div><span class="lang">ru</span><span id="e2"></span></div></div>
+<div class="hint">click or R = replay &middot; T = transparent &middot; H = hide hint</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let run=0;
+async function type(el,text,ms=35,id){el.textContent="";for(const c of text){if(id!==run)return;el.textContent+=c;await sleep(ms)}}
+async function reveal(sel,gap=500,id){for(const e of $$(sel)){if(id!==run)return;e.classList.add("on");await sleep(gap)}}
+function reset(){$$(".fade").forEach(e=>e.classList.remove("on"))}
+async function play(){const id=++run;reset();await sleep(200);await scene(id)}
+addEventListener("click",play);
+addEventListener("keydown",e=>{const k=e.key.toLowerCase();if(k==="r")play();if(k==="t")document.body.classList.toggle("clear");if(k==="h")document.body.classList.toggle("rec")});
+if(location.hash.includes("clear"))document.body.classList.add("clear");
+if(location.hash.includes("rec"))document.body.classList.add("rec");
+const E=['app.cham, line 3: I don\'t know the word "sav". Did you mean "save"?','app.cham, рядок 3: Я не знаю слова "sav". Можливо, ви мали на увазі "save"?','app.cham, строка 3: Я не знаю слова "sav". Возможно, вы имели в виду "save"?'];
+async function scene(id){for(let i=0;i<3;i++)$("#e"+i).textContent="";for(let i=0;i<3;i++){await type($("#e"+i),E[i],28,id);await sleep(500)}}
+play();
+</script></body></html>

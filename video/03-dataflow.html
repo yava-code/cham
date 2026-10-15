@@ -1,0 +1,50 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Cham data flow</title>
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{background:#0d1210;color:#e8efe9;font:32px/1.4 "Inter",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;position:relative}
+body.clear{background:transparent}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.g{color:#7fd35a}.m{color:#8a9a90}.r{color:#ff8a65}
+.fade{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
+.fade.on{opacity:1;transform:none}
+.hint{position:absolute;right:24px;bottom:16px;font-size:16px;color:#4a5a50}
+body.rec .hint{display:none}
+
+.w{width:1700px;text-align:center}h2{font-size:56px;margin-bottom:70px}
+.row{display:flex;align-items:center;justify-content:space-between}
+.box{width:320px;padding:30px 10px;border:3px solid #26332b;border-radius:16px;background:#151c18;transition:.4s}
+.box.hot{border-color:#7fd35a;box-shadow:0 0 40px #7fd35a55}
+.box b{display:block;font-size:44px}.box span{font-size:22px;color:#8a9a90}
+.arrow{font-size:60px;color:#26332b;transition:.3s}.arrow.hot{color:#7fd35a}
+.pk{margin:70px auto 0;font-size:30px;height:50px;color:#7fd35a}
+pre{margin:40px auto 0;text-align:left;width:900px;font-size:28px;background:#151c18;padding:24px;border-radius:12px}
+</style></head><body>
+<div class="w"><h2>request &rarr; need &rarr; save &rarr; answer</h2>
+<div class="row"><div class="box" id="b0"><b>request</b><span>POST /orders</span></div><div class="arrow">&rarr;</div>
+<div class="box" id="b1"><b>need</b><span>name, phone, item</span></div><div class="arrow">&rarr;</div>
+<div class="box" id="b2"><b>save</b><span>to orders</span></div><div class="arrow">&rarr;</div>
+<div class="box" id="b3"><b>answer</b><span>"Thanks, " + name</span></div></div>
+<div class="pk mono" id="pk"></div>
+<pre class="mono"><span class="m">when someone posts /orders:</span>
+    need name, phone, item
+    order = save name, phone, item to orders
+    answer "Thanks, " + name, order</pre></div>
+<div class="hint">click or R = replay &middot; T = transparent &middot; H = hide hint</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let run=0;
+async function type(el,text,ms=35,id){el.textContent="";for(const c of text){if(id!==run)return;el.textContent+=c;await sleep(ms)}}
+async function reveal(sel,gap=500,id){for(const e of $$(sel)){if(id!==run)return;e.classList.add("on");await sleep(gap)}}
+function reset(){$$(".fade").forEach(e=>e.classList.remove("on"))}
+async function play(){const id=++run;reset();await sleep(200);await scene(id)}
+addEventListener("click",play);
+addEventListener("keydown",e=>{const k=e.key.toLowerCase();if(k==="r")play();if(k==="t")document.body.classList.toggle("clear");if(k==="h")document.body.classList.toggle("rec")});
+if(location.hash.includes("clear"))document.body.classList.add("clear");
+if(location.hash.includes("rec"))document.body.classList.add("rec");
+const msgs=['{"name":"Olena","phone":"500","item":"Гостра"}','checked: all three fields are there','saved as record #1 in data/orders.json','{"message":"Thanks, Olena","data":{...}}'];
+async function scene(id){$$(".box,.arrow").forEach(e=>e.classList.remove("hot"));$("#pk").textContent="";
+for(let i=0;i<4;i++){if(id!==run)return;$("#b"+i).classList.add("hot");if(i)$$(".arrow")[i-1].classList.add("hot");$("#pk").textContent=msgs[i];await sleep(1600)}}
+play();
+</script></body></html>

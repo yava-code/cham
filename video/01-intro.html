@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Cham intro</title>
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{background:#0d1210;color:#e8efe9;font:32px/1.4 "Inter",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;position:relative}
+body.clear{background:transparent}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.g{color:#7fd35a}.m{color:#8a9a90}.r{color:#ff8a65}
+.fade{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
+.fade.on{opacity:1;transform:none}
+.hint{position:absolute;right:24px;bottom:16px;font-size:16px;color:#4a5a50}
+body.rec .hint{display:none}
+
+.c{text-align:center}img{height:360px}h1{font-size:150px;letter-spacing:-4px;margin-top:10px}
+p{font-size:42px;color:#8a9a90}
+</style></head><body>
+<div class="c"><img class="fade" src="logo.png"><h1 class="fade">Cham</h1><p class="fade">A backend you can read in one breath.</p></div>
+<div class="hint">click or R = replay &middot; T = transparent &middot; H = hide hint</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let run=0;
+async function type(el,text,ms=35,id){el.textContent="";for(const c of text){if(id!==run)return;el.textContent+=c;await sleep(ms)}}
+async function reveal(sel,gap=500,id){for(const e of $$(sel)){if(id!==run)return;e.classList.add("on");await sleep(gap)}}
+function reset(){$$(".fade").forEach(e=>e.classList.remove("on"))}
+async function play(){const id=++run;reset();await sleep(200);await scene(id)}
+addEventListener("click",play);
+addEventListener("keydown",e=>{const k=e.key.toLowerCase();if(k==="r")play();if(k==="t")document.body.classList.toggle("clear");if(k==="h")document.body.classList.toggle("rec")});
+if(location.hash.includes("clear"))document.body.classList.add("clear");
+if(location.hash.includes("rec"))document.body.classList.add("rec");
+async function scene(id){await reveal(".fade",700,id)}
+play();
+</script></body></html>
