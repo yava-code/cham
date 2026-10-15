@@ -46,7 +46,7 @@ arm 11:00 again through curl:
 curl -H 'Content-Type: application/json' localhost:8081/bookings \
   -d '{"device":"Robot arm","slot":"11:00","who":"Piotr"}'
 ```
-409 with a readable reason. Show `lab/app.cham`: 10 lines, one new keyword
+409 with a readable reason. Show `lab/app.cham`: about 15 lines, one new keyword
 (`get` + `if`).
 
 **3:15–3:45 · Three languages.** Stop terminal 2. Break line 3 of a copy of

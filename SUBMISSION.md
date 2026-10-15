@@ -43,8 +43,7 @@ Levenshtein "did you mean" for typos. Every message sits in one table in
 
 **Challenges**
 Keeping the language small. Each keyword we added had to earn its place in
-both demos or stay out. We cut a `unique` keyword once `get` plus `if` did the same job; the lab app is useless
-without it.
+both demos or stay out. We cut a `unique` keyword once `get` plus `if` did the same job.
 
 **What we learned**
 A good error message does more teaching than a tutorial. Writing the same
