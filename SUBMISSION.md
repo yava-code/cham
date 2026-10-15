@@ -110,46 +110,90 @@ CHI 2025; Becker et al., METR 2025) with links.
 
 ---
 
-## Extra hackathons (unchecked rules: read before entering)
+## More hackathons
+
+Rules checked on Oct 15, 2026. Times are Warsaw time. Cham's first commit is
+from Oct 15, 2026, which falls inside every submission period below, so the
+"new projects only" rules are met.
+
+### Hyperbloom October: UI/UX and Web Design
+https://hyperbloom-october.devpost.com/ · deadline Oct 19, 23:00 ·
+$9,117 · ~505 registered · adult students only · new projects only, one
+project per person. Judged on design, so the demo pages carry this one.
+
+**Tagline:** Two small web apps whose backend fits on one screen.
+
+**Description**
+We designed two interfaces for people who are not tech companies: an order
+page for a shawarma stand on Grochowska street in Warsaw, and a booking grid
+for a university robotics lab. The shawarma page looks like a paper menu,
+because that is what the regulars expect. The lab grid shows who has which
+device at what hour, and a click books a free cell. Errors show up in plain
+Ukrainian or English next to the button you pressed, never as a code. Both
+run on Cham, a tiny backend we wrote so the logic behind each page stays
+around ten readable lines.
+
+### Build With AI: Basics
+https://learn-ai-basics.devpost.com/ · deadline Oct 26, 22:00 · $2,500
+($1,250 / $750 / $500) · ~3,500 registered · age of majority, open worldwide
+· new projects only · needs a 1 to 3 minute video and a public repo.
+Reviewers won't run the code, so the video must show it working.
+
+**Tagline:** Ask the AI for ten lines you can check, not four hundred you
+have to trust.
+
+**Description**
+Cham is a backend for learners. You describe a route in plain steps (`need`,
+`save`, `reply`) and one Rust binary serves it with storage and a static
+site. We built it after reading Bastani et al. (PNAS 2025): students with
+unrestricted GPT-4 help did 17% worse on a later exam. With Cham you can
+still ask a model to write the script, but the result is short enough to read
+line by line, and when it breaks the error tells you what to change in
+English, Ukrainian or Russian. For: CS freshmen and self-taught beginners.
+What I learned: writing one error message in three languages makes you cut it
+to the one fact that matters.
 
 ### Next Byte Hacks V5
-https://next-byte-hacks-v5.devpost.com/ · online · deadline Oct 31, 2026 ·
-$100 cash · ~196 registered · themes: beginner friendly, open ended.
+https://next-byte-hacks-v5.devpost.com/ · deadline Oct 31, 22:00 · $100
+cash · ~196 registered · 13+, worldwide, teams 1 to 4 · new projects only
+· needs a description, tech list, screenshots, 2 to 5 minute video, repo.
 
 **Tagline:** Your first backend, in ten lines you can read out loud.
 
 **Description**
 Cham is a tiny backend engine for people who just learned what an API is.
-You write routes as plain steps (`need`, `save`, `reply`) and get a JSON API,
-file storage and a static site from one binary. When you make a mistake, Cham
-tells you which line and what to type instead, in English, Ukrainian or
-Russian. We built two apps to test it: a shawarma stand's order page and a
+You write routes as plain steps and get a JSON API, file storage and a
+static site from one binary. Make a typo and Cham tells you the line and the
+word you probably meant. We tested it on a shawarma stand's order page and a
 lab booking grid.
 
 ### DSH Hacks V2
-https://dsh-hacks-v2.devpost.com/ · online · deadline Nov 15, 2026 ·
-non-cash prizes ("$100k+" in title) · ~495 registered · open ended.
-STEMise runs it; check the age limits first.
+https://dsh-hacks-v2.devpost.com/ · rules say submissions close Nov 8; the
+header says Nov 14, 23:45 PST (Nov 15, 08:45). Aim for Nov 8 · non-cash
+prizes · ~495 registered · 13+ and enrolled at an educational institution
+(university counts) · AI use allowed.
 
 **Tagline:** A backend language small enough to learn in one lesson.
 
 **Description**
 Teachers who want students to build a real web app hit the same wall: the
-backend part takes weeks of setup. Cham removes the setup. Students write a
-short `.cham` file, run one program, and have a working API with saved data.
-Errors are explained in plain words and in the student's language. The repo
-includes a lesson-sized example for a food stand and one for a school lab.
+backend takes weeks of setup. Cham removes the setup. Students write a short
+`.cham` file, run one program and get a working API with saved data. Errors
+come in plain words and in the student's language. The repo has two
+lesson-sized examples: a food stand and a school lab.
 
-### Build With AI: Basics
-https://learn-ai-basics.devpost.com/ · online · deadline Oct 26, 2026 ·
-$2,500 · ~3,500 registered · themes: AI/ML, education.
-Check whether the rules require an AI feature inside the project; Cham has
-none, so this one only fits if "AI-assisted building" counts.
+### Code for Humanity
+https://code-for-humanity.devpost.com/ · deadline Jan 15, 2027, 13:00 ·
+prizes not listed · ~585 registered · students only · project must address a
+social, educational, accessibility or similar problem.
 
-**Tagline:** Learn the basics with AI without handing it the steering wheel.
+**Tagline:** Programming errors explained in the language you think in.
 
 **Description**
-Studies show students who copy AI answers learn less (Bastani et al., PNAS
-2025). Cham keeps AI help but shrinks what it produces: a model can write a
-ten-line `.cham` file and the learner can check each line, run it and read
-the errors in their own language. We tested it on two small apps.
+Most programming tools speak English only, and their errors assume you
+already know the jargon. For a Ukrainian student in Poland that means two
+barriers before the first working app. Cham is a small backend tool whose
+every message, from a typo in your script to a missing form field, comes in
+Ukrainian, Russian or English and says what to change. The language has
+fourteen keywords, so a beginner can read the whole program. It is open
+source under MIT, and adding a language means filling one table.
