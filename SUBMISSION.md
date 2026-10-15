@@ -26,14 +26,15 @@ nothing hidden.
 
 **What it does**
 Cham reads a `.cham` file and serves it as a JSON API with static files and
-CORS. A route is a list of steps: `need`, `default`, `stamp`, `unique`,
-`save`, `list`, `find`, `reply`. Data goes into JSON files and picks up new
+CORS. A route is a few lines of real code built from ten words: `when`,
+`need`, `if`, `not`, `get`, `all`, `save`, `delete`, `answer`, `now`, plus
+plain variables. Data goes into JSON files and picks up new
 fields without migrations. Errors come back in Ukrainian, Russian or English
 and say how to fix the problem.
 
 Two apps on the same skeleton:
-- a shawarma stand's order page and kitchen queue (12 lines of backend)
-- a robotics lab equipment booking grid that refuses double bookings (10 lines)
+- a shawarma stand's order page and kitchen queue (about 25 lines of backend)
+- a robotics lab equipment booking grid that refuses double bookings (about 15 lines)
 
 **How we built it**
 Rust, `tiny_http`, `serde_json`. The parser is a line-by-line match with a
@@ -42,7 +43,7 @@ Levenshtein "did you mean" for typos. Every message sits in one table in
 
 **Challenges**
 Keeping the language small. Each keyword we added had to earn its place in
-both demos or stay out. `unique` made it in because the lab app is useless
+both demos or stay out. We cut a `unique` keyword once `get` plus `if` did the same job; the lab app is useless
 without it.
 
 **What we learned**
@@ -83,11 +84,11 @@ tooling has less left for learning the concept.
 Cham is a single Rust binary that runs a tiny route language:
 
 ```
-post /orders
-  need name, phone, item
-  stamp
-  save orders
-  reply 201 "Thanks, {name}!"
+when someone posts /orders:
+    need name, phone, item
+    time = now
+    order = save name, phone, item, time to orders
+    answer "Thanks, " + name, order
 ```
 
 Each line is one step, run in order. Storage adapts to new fields by itself.
@@ -144,7 +145,7 @@ have to trust.
 
 **Description**
 Cham is a backend for learners. You describe a route in plain steps (`need`,
-`save`, `reply`) and one Rust binary serves it with storage and a static
+`save`, `answer`) and one Rust binary serves it with storage and a static
 site. We built it after reading Bastani et al. (PNAS 2025): students with
 unrestricted GPT-4 help did 17% worse on a later exam. With Cham you can
 still ask a model to write the script, but the result is short enough to read

@@ -6,8 +6,8 @@
 cd cham
 cargo build --release
 rm -rf examples/*/data                 # start with empty data
-./target/release/cham examples/shawarma/app.cham          # terminal 1, :8080
-PORT=8081 ./target/release/cham examples/lab/app.cham     # terminal 2, :8081
+./target/release/cham examples/shawarma     # terminal 1, :8080
+./target/release/cham examples/lab          # terminal 2, :8081
 ```
 
 Have open: an editor with `examples/shawarma/app.cham`, a browser with tabs on
@@ -22,7 +22,7 @@ back. Studies show students who lean on AI like that learn less." Show the
 README research section for two seconds.
 
 **0:30–1:15 · The script.** Editor on `shawarma/app.cham`. Read the
-`post /orders` route line by line: need, default, stamp, save, reply. "That's
+`when someone posts /orders` route line by line: need, the price `if`, save, answer. "That's
 the whole backend. No config, no migrations." Switch to terminal 1 and show
 the startup line.
 
@@ -47,17 +47,17 @@ curl -H 'Content-Type: application/json' localhost:8081/bookings \
   -d '{"device":"Robot arm","slot":"11:00","who":"Piotr"}'
 ```
 409 with a readable reason. Show `lab/app.cham`: 10 lines, one new keyword
-(`unique`).
+(`get` + `if`).
 
 **3:15–3:45 · Three languages.** Stop terminal 2. Break line 3 of a copy of
 the script (`sav` instead of `save`), run it three times:
 ```sh
-printf 'post /x\n  need a\n  sav things\n' > /tmp/bad.cham
+printf 'when someone posts /x:\n    need a\n    sav a to things\n' > /tmp/bad.cham
 for l in en uk ru; do CHAM_LANG=$l ./target/release/cham /tmp/bad.cham; done
 ```
 Three "did you mean save?" messages with the line number.
 
-**3:45–4:00 · Close.** "One binary, about 600 lines of Rust, two apps on the
+**3:45–4:00 · Close.** "One binary, about 1,000 lines of Rust, two apps on the
 same core. The student writes the logic and understands every step." Show
 the repo URL.
 

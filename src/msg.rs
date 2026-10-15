@@ -94,6 +94,59 @@ fn table(lang: Lang, key: &str) -> &'static str {
         ("port_busy", Uk) => "Порт {0} зайнятий. Зупиніть іншу програму або запустіть з PORT=8081.",
         ("port_busy", Ru) => "Порт {0} занят. Остановите другую программу или запустите с PORT=8081.",
 
+
+        ("not_indented", En) => "\"{0}\" has to be inside a route. Indent it under a line like: when someone posts /orders:",
+        ("not_indented", Uk) => "\"{0}\" має бути всередині маршруту. Зробіть відступ під рядком на кшталт: when someone posts /orders:",
+        ("not_indented", Ru) => "\"{0}\" должен быть внутри маршрута. Сделайте отступ под строкой вроде: when someone posts /orders:",
+
+        ("bad_indent", En) => "the indentation here doesn't match the lines above. Line it up with them, or indent it under an if.",
+        ("bad_indent", Uk) => "відступ тут не збігається з рядками вище. Вирівняйте його або поставте під if.",
+        ("bad_indent", Ru) => "отступ здесь не совпадает со строками выше. Выровняйте его или поставьте под if.",
+
+        ("unclosed_paren", En) => "a bracket opens here but never closes. Add ) before the end of the line.",
+        ("unclosed_paren", Uk) => "дужка відкривається, але не закривається. Додайте ) до кінця рядка.",
+        ("unclosed_paren", Ru) => "скобка открыта, но не закрыта. Добавьте ) до конца строки.",
+
+        ("need_colon", En) => "this line should end with a colon. Example: {0}",
+        ("need_colon", Uk) => "цей рядок має закінчуватися двокрапкою. Приклад: {0}",
+        ("need_colon", Ru) => "эта строка должна заканчиваться двоеточием. Пример: {0}",
+
+        ("bad_when", En) => "I can't read this route. Write: when someone posts /orders:  (or opens, deletes)",
+        ("bad_when", Uk) => "Не можу прочитати маршрут. Напишіть: when someone posts /orders:  (або opens, deletes)",
+        ("bad_when", Ru) => "Не могу прочитать маршрут. Напишите: when someone posts /orders:  (или opens, deletes)",
+
+        ("leftover", En) => "I understood the start of the line but not \"{0}\". Check for a missing + or comma.",
+        ("leftover", Uk) => "Початок рядка зрозумів, а \"{0}\" ні. Перевірте, чи не бракує + або коми.",
+        ("leftover", Ru) => "Начало строки понял, а \"{0}\" нет. Проверьте, не пропущен ли + или запятая.",
+
+        ("empty_if", En) => "this if has nothing to do. Put a step after the colon or indent the next lines under it.",
+        ("empty_if", Uk) => "цей if нічого не робить. Напишіть крок після двокрапки або зробіть відступ для наступних рядків.",
+        ("empty_if", Ru) => "этот if ничего не делает. Напишите шаг после двоеточия или сделайте отступ для следующих строк.",
+
+        ("undefined", En) => "You used \"{0}\", but the request didn't send it and nothing set it before. Send \"{0}\" with the request or write {0} = ... above this line (line {1}).",
+        ("undefined", Uk) => "Ви використали \"{0}\", але запит його не надіслав і ніщо не задало його раніше. Надішліть \"{0}\" із запитом або напишіть {0} = ... вище (рядок {1}).",
+        ("undefined", Ru) => "Вы использовали \"{0}\", но запрос его не прислал и ничто не задало его раньше. Отправьте \"{0}\" с запросом или напишите {0} = ... выше (строка {1}).",
+
+        ("broken_script", En) => "The app script has an error, so this app can't answer yet. {0}",
+        ("broken_script", Uk) => "У скрипті застосунку помилка, тому він поки не може відповісти. {0}",
+        ("broken_script", Ru) => "В скрипте приложения ошибка, поэтому оно пока не может ответить. {0}",
+
+        ("routes", En) => "Routes:",
+        ("routes", Uk) => "Маршрути:",
+        ("routes", Ru) => "Маршруты:",
+
+        ("cheat", En) => "Cheat sheet:\n  when someone posts /x:   need a, b   x = get orders id   if not x: answer 404 \"no\"\n  order = save a, b to orders   delete orders id   answer \"text\" + a, order   all orders   now\n  Edit app.cham, then restart. Data lives in data/*.json.",
+        ("cheat", Uk) => "Шпаргалка:\n  when someone posts /x:   need a, b   x = get orders id   if not x: answer 404 \"ні\"\n  order = save a, b to orders   delete orders id   answer \"текст\" + a, order   all orders   now\n  Редагуйте app.cham і перезапустіть. Дані лежать у data/*.json.",
+        ("cheat", Ru) => "Шпаргалка:\n  when someone posts /x:   need a, b   x = get orders id   if not x: answer 404 \"нет\"\n  order = save a, b to orders   delete orders id   answer \"текст\" + a, order   all orders   now\n  Редактируйте app.cham и перезапустите. Данные лежат в data/*.json.",
+
+        ("created", En) => "Created {0}/ with app.cham and index.html. Run it: cham {0}",
+        ("created", Uk) => "Створив {0}/ з app.cham та index.html. Запуск: cham {0}",
+        ("created", Ru) => "Создал {0}/ с app.cham и index.html. Запуск: cham {0}",
+
+        ("exists", En) => "{0} already exists. Pick another name.",
+        ("exists", Uk) => "{0} вже існує. Оберіть іншу назву.",
+        ("exists", Ru) => "{0} уже существует. Выберите другое имя.",
+
         (_, _) => "{0}",
     }
 }

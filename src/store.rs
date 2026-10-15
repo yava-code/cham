@@ -52,11 +52,43 @@ impl Store {
         rec.insert("id".into(), id.into());
         rows.push(Value::Object(rec));
         let saved = rows.last().cloned().unwrap();
-        let body = serde_json::to_string_pretty(rows).unwrap();
+        self.flush(name)?;
+        Ok(saved)
+    }
+
+    /// First record whose fields all equal `want` (compared as text, so the
+    /// "7" from a URL matches the number 7 on disk).
+    pub fn find(&mut self, name: &str, want: &Map<String, Value>) -> Option<Value> {
+        self.all(name).iter().find(|r| matches(r, want)).cloned()
+    }
+
+    pub fn remove(&mut self, name: &str, want: &Map<String, Value>) -> std::io::Result<usize> {
+        let rows = self.all(name);
+        let before = rows.len();
+        rows.retain(|r| !matches(r, want));
+        let gone = before - rows.len();
+        if gone > 0 {
+            self.flush(name)?;
+        }
+        Ok(gone)
+    }
+
+    fn flush(&mut self, name: &str) -> std::io::Result<()> {
+        let body = serde_json::to_string_pretty(self.all(name)).unwrap();
         fs::create_dir_all(&self.dir)?;
         let tmp = self.path(name).with_extension("tmp");
         fs::write(&tmp, body)?;
-        fs::rename(tmp, self.path(name))?;
-        Ok(saved)
+        fs::rename(tmp, self.path(name))
     }
+}
+
+fn text(v: &Value) -> String {
+    match v {
+        Value::String(s) => s.clone(),
+        other => other.to_string(),
+    }
+}
+
+fn matches(row: &Value, want: &Map<String, Value>) -> bool {
+    want.iter().all(|(k, v)| row.get(k).map(|r| text(r) == text(v)).unwrap_or(false))
 }

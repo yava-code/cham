@@ -1,0 +1,23 @@
+# Your app. Change the settings, then run: cham myapp
+
+port = 8080
+lang = "en"            # en, uk or ru
+
+# Someone sends a note from the page.
+when someone posts /notes:
+    need name, text              # stop here if a field is missing
+    time = now
+    note = save name, text, time to notes
+    answer "Thanks, " + name, note
+
+# The page asks for every note.
+when someone opens /notes:
+    answer all notes
+
+# Remove one note by its number.
+when someone deletes /notes/:id:
+    note = get notes id
+    if not note:
+        answer 404 "There is no note number " + id
+    delete notes id
+    answer "Deleted note " + id

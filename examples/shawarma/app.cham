@@ -1,18 +1,35 @@
 # Shawarma "U Tarasa", Warsaw, ul. Grochowska.
-# Customers order from the page, the cook watches /orders on a tablet.
+# Customers order from the page, the cook watches the queue on a tablet.
 
-lang uk
-static public
+port = 8080
+lang = "uk"
+price = 28                 # zł, any shawarma
+large_extra = 6            # zł on top for a large one
 
-post /orders
-  need name, phone, item
-  default size = звичайна
-  stamp
-  save orders
-  reply 201 "Дякуємо, {name}! Номер замовлення буде на екрані."
+# A customer presses "Замовити".
+when someone posts /orders:
+    need name, phone, item, size
+    total = price
+    if size == "велика": total = price + large_extra
+    time = now
+    order = save name, phone, item, size, total, time to orders
+    answer 201 "Дякуємо, " + name + "! До сплати " + total + " zł.", order
 
-get /orders
-  list orders
+# The page and the kitchen tablet read the queue.
+when someone opens /orders:
+    answer all orders
 
-get /orders/:id
-  find orders by id
+# Check one order.
+when someone opens /orders/:id:
+    order = get orders id
+    if not order:
+        answer 404 "Замовлення " + id + " немає"
+    answer order
+
+# The cook hands it over and clears it from the queue.
+when someone deletes /orders/:id:
+    order = get orders id
+    if not order:
+        answer 404 "Замовлення " + id + " немає"
+    delete orders id
+    answer "Видано: " + order.item + " для " + order.name

@@ -1,15 +1,20 @@
 # Equipment booking for a university robotics lab.
-# One device, one slot, one person. Double bookings get a 409.
+# One device, one slot, one person.
 
-lang en
-static public
+port = 8081
+lang = "en"
 
-post /bookings
-  need device, slot, who
-  unique bookings device, slot
-  stamp booked_at
-  save bookings
-  reply 201 "{device} is yours at {slot}."
+when someone posts /bookings:
+    need device, slot, who
+    taken = get bookings device, slot
+    if taken:
+        answer 409 device + " at " + slot + " is already booked by " + taken.who
+    booking = save device, slot, who to bookings
+    answer 201 device + " is yours at " + slot + ".", booking
 
-get /bookings
-  list bookings
+when someone opens /bookings:
+    answer all bookings
+
+when someone deletes /bookings/:id:
+    delete bookings id
+    answer "Booking " + id + " cancelled."

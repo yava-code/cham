@@ -6,11 +6,11 @@ Cham runs a small JSON backend from a text file you can read top to bottom.
 One binary, about 1 MB. No config, no migrations, no `node_modules`.
 
 ```
-post /orders
-  need name, phone, item
-  stamp
-  save orders
-  reply 201 "Thanks, {name}!"
+when someone posts /orders:
+    need name, phone, item
+    time = now
+    order = save name, phone, item, time to orders
+    answer "Thanks, " + name, order
 ```
 
 Those five lines give you an endpoint that checks the input, timestamps it,
@@ -43,33 +43,63 @@ that matters.
 
 ```sh
 cargo build --release
-./target/release/cham examples/shawarma/app.cham
-# open http://127.0.0.1:8080
+./target/release/cham new myapp     # app.cham + index.html, ready to run
+./target/release/cham myapp         # open http://127.0.0.1:8080
 ```
 
-`PORT=8081` changes the port. `CHAM_LANG=uk|ru|en` picks the language of the
-console and of error replies. Without it, Cham uses the `lang` line of the
-script, then English.
+On start Cham prints the routes it found and a three-line cheat sheet.
+`PORT=8081` and `CHAM_LANG=uk|ru|en` override the settings in the file.
 
 ## The language
 
-| line | what it does |
-|---|---|
-| `lang uk` | language for messages |
-| `static public` | serve files from `public/` next to the script |
-| `post /orders` | start a route (`get`, `post`, `put`, `delete`; `:id` captures a path part) |
-| `need a, b` | refuse the request with 422 if a field is missing or empty |
-| `default size = large` | fill a field if the client did not send it |
-| `stamp [field]` | put the current Unix time into `created_at` or the field you name |
-| `unique coll a, b` | refuse with 409 if a record with the same `a` and `b` exists |
-| `save coll` | append the request to `data/coll.json`, give it an `id` |
-| `list coll` | answer with every record |
-| `find coll by field` | answer with the first record where `field` matches |
-| `reply 201 "text {name}"` | answer now; `{field}` fills in values from the request |
+Settings go at the top, routes below. Indent the steps of a route, like in
+Python. Data comes in with the request, you pass it through variables, save
+it, and send something back.
 
-A route without `reply` answers 200 with whatever the last step produced.
-CORS headers go out on every response, and `OPTIONS` requests get a 204, so
-a frontend on another port works without setup.
+```
+port = 8080
+lang = "uk"
+price = 28
+
+when someone posts /orders:
+    need name, item, size                 # in: stop if a field is missing
+    total = price                         # work: plain variables
+    if size == "велика": total = price + 6
+    order = save name, item, size, total to orders     # store
+    answer 201 "До сплати " + total + " zł", order     # out
+
+when someone opens /orders:
+    answer all orders
+
+when someone deletes /orders/:id:
+    order = get orders id
+    if not order:
+        answer 404 "No order " + id
+    delete orders id
+    answer "Deleted " + order.item
+```
+
+The whole vocabulary:
+
+| word | what it does |
+|---|---|
+| `when someone posts/opens/deletes /path:` | start a route; `:id` in the path becomes a variable |
+| `need a, b` | answer 422 if any of these fields is missing or empty |
+| `x = ...` | set a variable; request fields are variables already |
+| `if ...:` | run the rest of the line, or the indented lines below, when true |
+| `not` | flip true and false: `if not order:` |
+| `save a, b to coll` | write those fields as a new record, gives it an `id`, returns it |
+| `get coll a, b` | first record whose `a` and `b` equal your variables, or nothing |
+| `delete coll a, b` | remove the matching records |
+| `all coll` | every record in the collection |
+| `answer [status] value [, data]` | reply and stop; text becomes `{"message"}`, or `{"error"}` for 400+ |
+| `now` | current Unix time |
+
+Operators: `+` adds numbers or joins text, `-`, `==`, `!=`, `>`, `<`, `>=`,
+`<=`, and brackets. `order.item` reads a field of a record.
+
+Files next to the script (or in `public/` if it exists) are served as the
+website. CORS headers go out on every response.
 
 ### Storage
 
@@ -89,21 +119,23 @@ built for hundreds or a few thousand records. Past that, use a real database.
 
 **`examples/shawarma`**: order page for a shawarma stand on Grochowska. The
 customer picks from the menu, leaves a name and phone; the kitchen sees the
-queue under the form. Backend: 3 routes, 12 lines.
+queue under the form. Backend: 4 routes, about 25 lines, including a price check and delete.
 
 **`examples/lab`**: equipment booking grid for a university robotics lab.
 Click a free cell to book the oscilloscope for 11:00; the second person who
-tries the same slot gets a 409 with a readable reason. Backend: 2 routes,
-10 lines. The only new idea compared to the shawarma app is `unique`.
+tries the same slot gets a 409 with a readable reason. Backend: 3 routes,
+about 15 lines. Double booking is one `get` and one `if`.
 
 ```sh
-./target/release/cham examples/shawarma/app.cham            # :8080
-PORT=8081 ./target/release/cham examples/lab/app.cham       # :8081
+./target/release/cham examples/shawarma     # :8080
+./target/release/cham examples/lab          # :8081
 ```
 
 ## Errors people can read
 
-A typo in the script stops startup and points at the line:
+A mistake in the script points at the line. The console prints it, and the
+server answers every request with the same text, so you see it in the
+browser too:
 
 ```
 $ CHAM_LANG=en cham app.cham
@@ -126,6 +158,9 @@ $ curl -d '{"name":"Ivan"}' localhost:8080/orders
 $ curl -d '{name:Ivan' localhost:8080/orders
 { "error": "Тіло запиту не є коректним JSON (key must be a string at line 1 column 2). Надішліть щось на кшталт {\"name\": \"Олена\"} із Content-Type: application/json." }
 
+$ curl -d '{"name":"A"}' localhost:8099/x      # script says: answer "Hi " + nam
+{ "error": "Вы использовали \"nam\", но запрос его не прислал и ничто не задало его раньше. Отправьте \"nam\" с запросом или напишите nam = ... выше (строка 2)." }
+
 $ curl localhost:8081/nothing
 { "error": "Nothing answers GET /nothing. Routes in this app: POST /bookings, GET /bookings" }
 ```
@@ -140,7 +175,7 @@ solving by means-ends analysis "requires a relatively large amount of
 cognitive processing capacity which is consequently unavailable for schema
 acquisition". A beginner juggling a router, an ORM, env files and a build tool
 has little capacity left to learn what a request is.
-Cham cuts the number of moving parts to one file and fourteen keywords.
+Cham cuts the number of moving parts to one file and ten words.
 ([Sweller 1988, Cognitive Science 12(2)](https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1202_4))
 
 **Unrestricted AI help raises practice scores and lowers learning.**
@@ -181,17 +216,18 @@ four hundred they have to trust.
 
 ```
 src/main.rs     HTTP server, request pipeline, static files, CORS
-src/script.rs   .cham parser with "did you mean" hints
+src/script.rs   .cham parser: indentation, expressions, "did you mean" hints
+templates/      what `cham new` writes
 src/store.rs    JSON-file collections
 src/msg.rs      every user-facing message in en / uk / ru
 examples/       shawarma and lab demos
 ```
 
-About 600 lines of Rust. Dependencies: `tiny_http` and `serde_json`.
+About 1,000 lines of Rust. Dependencies: `tiny_http` and `serde_json`.
 
 ## Limits
 
-No auth, no update/delete steps yet, single-threaded, binds to 127.0.0.1.
+No auth, no update step yet, single-threaded, binds to 127.0.0.1.
 It is a teaching tool and a prototype backend, not something to put in front
 of the internet.
 
