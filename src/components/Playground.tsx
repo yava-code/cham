@@ -5,7 +5,6 @@ import {
   handleRequest,
   Store,
   formatError,
-  type ChamApp,
   type RequestResult,
 } from "../cham/interpreter";
 import SAMPLES from "../cham/samples";
@@ -26,13 +25,9 @@ export default function Playground() {
   const [response, setResponse] = useState<RequestResult | null>(null);
   const [consoleLines, setConsoleLines] = useState<ConsoleLine[]>([]);
   const storeRef = useRef<Store>(new Store());
-  const appRef = useRef<{ app: ChamApp } | { error: { line: number; text: string } } | null>(null);
-
-  // Capture console.log for new-field notes
 
   const runRequest = useCallback(() => {
     const parsed = parse(code);
-    appRef.current = parsed;
 
     if ("error" in parsed) {
       const msg = formatError(parsed.error, code);
@@ -176,14 +171,14 @@ export default function Playground() {
                 </>
               ) : (
                 <span style={{ color: "var(--text-muted)" }}>
-                  Press "Send" to run the request against the script.
+                  No request sent yet. Pick a method and path, then press Send.
                 </span>
               )}
             </div>
 
             <div className="pg-console">
               {consoleLines.length === 0 ? (
-                <span style={{ color: "var(--text-muted)" }}>Console output will appear here.</span>
+                <span style={{ color: "var(--text-muted)" }}>Nothing logged yet. Send a request to see notes and errors here.</span>
               ) : (
                 consoleLines.map((l, i) => (
                   <div key={i} className={`line ${l.kind === "err" ? "err" : l.kind === "note" ? "note" : ""}`}>

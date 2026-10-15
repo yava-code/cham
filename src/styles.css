@@ -53,13 +53,6 @@ a:hover { text-decoration: underline; }
 .nav-links { display: flex; gap: 28px; align-items: center; }
 .nav-links a { color: var(--text-dim); font-size: 15px; }
 .nav-links a:hover { color: var(--text); text-decoration: none; }
-.nav-cta {
-  background: var(--accent); color: #0d1210;
-  padding: 7px 18px; border-radius: var(--radius-sm);
-  font-weight: 600; font-size: 15px;
-  transition: background 0.15s;
-}
-.nav-cta:hover { background: #8fe06a; text-decoration: none; }
 
 /* ---------- Hero ---------- */
 .hero {
@@ -103,11 +96,6 @@ a:hover { text-decoration: underline; }
   background: var(--surface-2); padding: 8px 16px;
   font-size: 12px; color: var(--text-dim);
   border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
-}
-.hero-code-head .dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--accent); opacity: 0.4;
 }
 .hero-code pre { padding: 20px; overflow-x: auto; color: var(--text); }
 .hero-code .kw { color: var(--accent); }
@@ -290,9 +278,10 @@ a:hover { text-decoration: underline; }
 
 /* ---------- Research ---------- */
 .research-item {
-  border-left: 2px solid var(--accent-dim);
-  padding: 16px 0 16px 24px; margin-bottom: 24px;
+  padding: 20px 0 20px 0; margin-bottom: 0;
+  border-bottom: 1px solid var(--border);
 }
+.research-item:last-child { border-bottom: none; }
 .research-item h4 { font-size: 16px; margin-bottom: 6px; }
 .research-item p { color: var(--text-dim); font-size: 15px; }
 .research-item .cite { color: var(--text-muted); font-size: 13px; font-family: var(--mono); }
@@ -304,8 +293,8 @@ a:hover { text-decoration: underline; }
   .playground-grid { grid-template-columns: 1fr; height: auto; }
   .pg-editor-wrap { height: 320px; }
   .demos-grid { grid-template-columns: 1fr; }
-  .nav-links { display: none; }
-  .nav-cta { display: inline-block; }
+  .nav-links { gap: 14px; }
+  .nav-links a { font-size: 13px; }
   .section { padding: 40px 20px; }
   .section h2 { font-size: 28px; }
 }

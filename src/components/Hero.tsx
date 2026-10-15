@@ -76,7 +76,6 @@ export default function Hero() {
       </div>
       <div className="hero-code">
         <div className="hero-code-head">
-          <span className="dot" />
           app.cham — 5 lines, one endpoint
         </div>
         <pre dangerouslySetInnerHTML={{ __html: highlightCham(CODE_SAMPLE) }} />

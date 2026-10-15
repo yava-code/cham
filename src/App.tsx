@@ -15,12 +15,12 @@ export default function App() {
             <span>Cham</span>
           </a>
           <div className="nav-links">
+            <a href="#playground">Playground</a>
             <a href="#language">Language</a>
             <a href="#demos">Demos</a>
             <a href="#install">Install</a>
             <a href="#research">Research</a>
             <a href="https://github.com/yava-code/cham" target="_blank" rel="noreferrer">GitHub</a>
-            <a href="#playground" className="nav-cta">Playground</a>
           </div>
         </div>
       </nav>

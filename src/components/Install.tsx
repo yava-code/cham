@@ -13,7 +13,9 @@ export default function Install() {
           <div className="install-body">
             <h3>Build the binary</h3>
             <p>Clone the repo and compile. The binary lands in target/release/.</p>
-            <code>{`git clone https://github.com/yava-code/cham\ncd cham\ncargo build --release`}</code>
+            <pre className="install-code"><code>{`git clone https://github.com/yava-code/cham
+cd cham
+cargo build --release`}</code></pre>
           </div>
         </div>
         <div className="install-step">
@@ -21,7 +23,7 @@ export default function Install() {
           <div className="install-body">
             <h3>Scaffold a new app</h3>
             <p>Creates a folder with app.cham and index.html, ready to run.</p>
-            <code>{`./target/release/cham new myapp`}</code>
+            <pre className="install-code"><code>{`./target/release/cham new myapp`}</code></pre>
           </div>
         </div>
         <div className="install-step">
@@ -29,7 +31,7 @@ export default function Install() {
           <div className="install-body">
             <h3>Run it</h3>
             <p>Open http://127.0.0.1:8080 in your browser. Edit app.cham and restart to change the API.</p>
-            <code>{`./target/release/cham myapp`}</code>
+            <pre className="install-code"><code>{`./target/release/cham myapp`}</code></pre>
           </div>
         </div>
       </div>

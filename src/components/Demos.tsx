@@ -22,7 +22,7 @@ export default function Demos() {
           <h3>Shawarma stand</h3>
           <p>Order page for a shawarma shop on Grochowska street. Customers pick from the menu, enter name and phone; the kitchen sees the queue. Includes price check and delete.</p>
           <div className="demo-link">
-            <a href="#playground" onClick={() => {}}>Try it in the playground →</a>
+            <a href="#playground" onClick={() => {}}>Try it in the playground</a>
           </div>
         </div>
         <div className="demo-card demo-lab">
@@ -40,7 +40,7 @@ export default function Demos() {
           <h3>Lab bookings</h3>
           <p>Equipment booking grid for a university robotics lab. Click a free cell to book. A second person trying the same slot gets a 409 with a readable reason — one get and one if.</p>
           <div className="demo-link">
-            <a href="#playground" onClick={() => {}}>Try it in the playground →</a>
+            <a href="#playground" onClick={() => {}}>Try it in the playground</a>
           </div>
         </div>
       </div>
