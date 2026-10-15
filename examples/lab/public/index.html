@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/logo.png">
+<title>Lab 2.14 bookings</title>
+<style>
+  body { margin: 0; background: #0f1417; color: #cfd8dc; font: 14px/1.4 ui-monospace, Menlo, monospace; }
+  main { max-width: 900px; margin: 0 auto; padding: 28px 18px; }
+  h1 { font-size: 18px; color: #fff; margin: 0 0 4px; }
+  p { color: #78909c; margin: 0 0 20px; }
+  label { margin-right: 8px; }
+  input { background: #1b2328; border: 1px solid #37474f; color: #fff; padding: 6px 8px; font: inherit; }
+  table { border-collapse: collapse; width: 100%; margin-top: 18px; }
+  th, td { border: 1px solid #263238; padding: 8px; text-align: left; }
+  th { color: #90a4ae; font-weight: normal; }
+  td.free { cursor: pointer; color: #4f6b75; }
+  td.free:hover { background: #17323a; color: #b2ebf2; }
+  td.taken { background: #2e2a12; color: #ffd54f; }
+  #msg { margin-top: 14px; min-height: 20px; }
+  .err { color: #ff8a65; } .ok { color: #a5d6a7; }
+</style>
+<main>
+  <h1><img src="/logo.png" alt="" style="height:20px;vertical-align:-3px;margin-right:8px">Lab 2.14 · equipment</h1>
+  <p>Click a free cell to book it. Same device, same slot twice gets refused.</p>
+  <label>your name <input id="who" placeholder="e.g. Marta K."></label>
+  <table id="t"></table>
+  <div id="msg"></div>
+</main>
+<script>
+const devices = ["Oscilloscope", "3D printer", "Jetson Orin", "Robot arm"];
+const slots = ["09:00", "11:00", "13:00", "15:00", "17:00"];
+const msg = document.getElementById("msg");
+
+async function draw() {
+  const rows = await (await fetch("/bookings")).json();
+  const taken = {};
+  rows.forEach(r => taken[r.device + "|" + r.slot] = r.who);
+  let html = "<tr><th></th>" + slots.map(s => `<th>${s}</th>`).join("") + "</tr>";
+  for (const d of devices) {
+    html += `<tr><th>${d}</th>` + slots.map(s => {
+      const who = taken[d + "|" + s];
+      return who ? `<td class="taken">${who}</td>` : `<td class="free" data-d="${d}" data-s="${s}">free</td>`;
+    }).join("") + "</tr>";
+  }
+  document.getElementById("t").innerHTML = html;
+}
+
+document.getElementById("t").onclick = async e => {
+  const c = e.target.closest("td.free");
+  if (!c) return;
+  const body = { device: c.dataset.d, slot: c.dataset.s, who: document.getElementById("who").value };
+  const res = await fetch("/bookings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await res.json();
+  msg.className = res.ok ? "ok" : "err";
+  msg.textContent = res.ok ? data.message : data.error;
+  draw();
+};
+draw();
+</script>

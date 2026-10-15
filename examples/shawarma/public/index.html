@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="uk">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/logo.png">
+<title>У Тараса · шаурма на Гроховській</title>
+<style>
+  body { margin: 0; background: #f3ead8; color: #2b1d12; font: 17px/1.45 Georgia, serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 20px 60px; }
+  h1 { font-size: 44px; margin: 0; letter-spacing: -1px; }
+  .addr { margin: 4px 0 28px; color: #7a5a3a; }
+  .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .item { border: 2px solid #2b1d12; padding: 12px 14px; cursor: pointer; background: #fffaf0; }
+  .item.on { background: #c8451c; color: #fffaf0; border-color: #c8451c; }
+  .item b { display: block; font-size: 19px; }
+  .price { float: right; font-family: monospace; }
+  form { margin-top: 26px; display: grid; gap: 10px; }
+  input, select, button { font: inherit; padding: 10px; border: 2px solid #2b1d12; background: #fffaf0; }
+  button { background: #2b1d12; color: #f3ead8; cursor: pointer; }
+  #out { margin-top: 16px; padding: 12px; display: none; }
+  #out.ok { display: block; background: #dfe9c8; }
+  #out.err { display: block; background: #f6d3c4; }
+  #queue { margin-top: 36px; font-family: monospace; font-size: 15px; }
+  #queue div { border-bottom: 1px dashed #b39b7d; padding: 4px 0; }
+</style>
+<main>
+  <h1><img src="/logo.png" alt="" style="height:40px;vertical-align:-4px;margin-right:10px">У Тараса</h1>
+  <p class="addr">Гроховська 214, Варшава · 11:00–23:00 · замовляй тут, забирай за 10 хвилин</p>
+
+  <div class="menu" id="menu"></div>
+
+  <form id="f">
+    <input name="name" placeholder="Ім'я">
+    <input name="phone" placeholder="Телефон">
+    <select name="size"><option>звичайна</option><option>велика</option></select>
+    <button>Замовити</button>
+  </form>
+  <div id="out"></div>
+
+  <div id="queue"></div>
+</main>
+<script>
+const menu = [
+  ["Класична", "курка, капуста, часниковий соус", 28],
+  ["Гостра", "курка, халапеньйо, харіса", 30],
+  ["Фалафель", "нут, хумус, мариновані овочі", 26],
+  ["Тарілка", "те саме, але з картоплею фрі", 36],
+];
+let item = null;
+const m = document.getElementById("menu");
+menu.forEach(([name, what, zl]) => {
+  const d = document.createElement("div");
+  d.className = "item";
+  d.innerHTML = `<span class="price">${zl} zł</span><b>${name}</b>${what}`;
+  d.onclick = () => { item = name; [...m.children].forEach(c => c.classList.remove("on")); d.classList.add("on"); };
+  m.append(d);
+});
+
+document.getElementById("f").onsubmit = async e => {
+  e.preventDefault();
+  const body = Object.fromEntries(new FormData(e.target));
+  if (item) body.item = item;
+  const res = await fetch("/orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await res.json();
+  const out = document.getElementById("out");
+  out.className = res.ok ? "ok" : "err";
+  out.textContent = res.ok ? `${data.message} (#${data.data.id})` : data.error;
+  loadQueue();
+};
+
+async function loadQueue() {
+  const orders = await (await fetch("/orders")).json();
+  document.getElementById("queue").innerHTML = "<b>На кухні зараз</b>" + orders.slice(-6).reverse()
+    .map(o => `<div>#${o.id} ${o.item} (${o.size}) для ${o.name}</div>`).join("");
+}
+loadQueue();
+</script>

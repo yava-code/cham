@@ -1,0 +1,18 @@
+# Shawarma "U Tarasa", Warsaw, ul. Grochowska.
+# Customers order from the page, the cook watches /orders on a tablet.
+
+lang uk
+static public
+
+post /orders
+  need name, phone, item
+  default size = звичайна
+  stamp
+  save orders
+  reply 201 "Дякуємо, {name}! Номер замовлення буде на екрані."
+
+get /orders
+  list orders
+
+get /orders/:id
+  find orders by id
