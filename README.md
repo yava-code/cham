@@ -167,6 +167,29 @@ $ curl localhost:8081/nothing
 
 Every message lives in `src/msg.rs`. Adding Polish means adding one column.
 
+## Voice
+
+`examples/voice-shawarma` is the shawarma stand again, ordered by talking.
+
+```sh
+./target/release/cham examples/voice-shawarma     # open http://127.0.0.1:8082 in Chrome
+```
+
+Press the microphone. The page asks four questions out loud (name, which
+shawarma, size, phone), listens to each answer with the browser's
+SpeechRecognition, then posts the result to the same `/orders` route as the
+typed version. The reply is read aloud with speechSynthesis. When a field is
+missing or wrong, the spoken text is Cham's own error message, in the
+language set by `lang` in the script (`uk`, `ru` or `en`; the page reads it
+from a `/lang` route). The script is still the 10-word language; the voice
+part is about 120 lines of plain JavaScript in `public/index.html`.
+
+Limits: speech recognition works in Chrome and Edge and needs internet,
+because the browser sends audio to its own service. Firefox has no
+recognition, and the page says so. Voices depend on what the OS has
+installed. The phone number is read as digits, so noisy rooms hurt. Nothing
+voice-related runs on the server.
+
 ## Research behind the design
 
 **Novices run out of working memory before they run out of ideas.**

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="uk">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/logo.png">
+<title>У Тараса · голосом</title>
+<style>
+  body { margin: 0; background: #f3ead8; color: #2b1d12; font: 18px/1.45 Georgia, serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+  h1 { font-size: 40px; margin: 0 0 4px; }
+  #mic { width: 120px; height: 120px; border-radius: 50%; border: 0; background: #c8451c; color: #fffaf0; font-size: 18px; cursor: pointer; margin: 24px 0; }
+  #mic.on { background: #2b1d12; animation: p 1s infinite; }
+  @keyframes p { 50% { transform: scale(1.08); } }
+  #say, #heard { min-height: 28px; }
+  #say { font-size: 22px; } #heard { color: #7a5a3a; font-family: monospace; }
+  #form { margin-top: 20px; font-family: monospace; font-size: 15px; background: #fffaf0; border: 2px solid #2b1d12; padding: 12px; }
+  #warn { color: #b3261e; }
+</style>
+<main>
+  <h1>У Тараса</h1>
+  <div id="lbl">Натисни мікрофон і відповідай на питання.</div>
+  <button id="mic">говорити</button>
+  <div id="say"></div>
+  <div id="heard"></div>
+  <div id="form"></div>
+  <p id="warn"></p>
+</main>
+<script>
+// Texts per language. Add a column to add a language.
+const T = {
+  uk: { code: "uk-UA", start: "говорити", ask: ["Як вас звати?", "Яку шаурму? Класична, гостра, фалафель чи тарілка?", "Яка порція, звичайна чи велика?", "Назвіть номер телефону."],
+        items: { "класична": "Класична", "гостра": "Гостра", "фалафель": "Фалафель", "тарілка": "Тарілка" }, sizes: { "велика": "велика", "звичайна": "звичайна" },
+        retry: "Не зрозуміла. Ще раз.", nomic: "Цей браузер не вміє слухати. Відкрийте сторінку в Chrome." },
+  ru: { code: "ru-RU", start: "говорить", ask: ["Как вас зовут?", "Какую шаурму? Классическая, острая, фалафель или тарелка?", "Какая порция, обычная или большая?", "Назовите номер телефона."],
+        items: { "классическ": "Класична", "остр": "Гостра", "фалафел": "Фалафель", "тарелк": "Тарілка" }, sizes: { "больш": "большая", "обычн": "звичайна" },
+        retry: "Не поняла. Ещё раз.", nomic: "Этот браузер не умеет слушать. Откройте страницу в Chrome." },
+  en: { code: "en-US", start: "speak", ask: ["What's your name?", "Which one? Classic, spicy, falafel or plate?", "Which size, regular or large?", "Say your phone number."],
+        items: { "classic": "Класична", "spicy": "Гостра", "falafel": "Фалафель", "plate": "Тарілка" }, sizes: { "large": "large", "regular": "звичайна" },
+        retry: "I didn't catch that. Again.", nomic: "This browser can't listen. Open the page in Chrome." },
+};
+const $ = s => document.querySelector(s);
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let L = T.uk, busy = false;
+
+function speak(text) {
+  return new Promise(done => {
+    $("#say").textContent = text;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = L.code; u.onend = done; u.onerror = done;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  });
+}
+function listen() {
+  return new Promise((ok, no) => {
+    const r = new SR(); r.lang = L.code; r.interimResults = false;
+    r.onresult = e => { const t = e.results[0][0].transcript; $("#heard").textContent = "« " + t + " »"; ok(t); };
+    r.onerror = e => no(e.error); r.onend = () => no("silence");
+    r.start();
+  });
+}
+function match(text, table) {
+  const t = text.toLowerCase();
+  for (const k in table) if (t.includes(k)) return table[k];
+}
+// Ask one question until the answer makes sense (three tries).
+async function ask(q, parse) {
+  for (let i = 0; i < 3; i++) {
+    await speak(i ? L.retry + " " + q : q);
+    try { const v = parse(await listen()); if (v) return v; } catch (_) {}
+  }
+  throw "gave up";
+}
+
+async function order() {
+  if (busy) return; busy = true; $("#mic").classList.add("on"); $("#warn").textContent = "";
+  try {
+    const name = await ask(L.ask[0], t => t.trim().split(/\s+/)[0]);
+    const item = await ask(L.ask[1], t => match(t, L.items));
+    const size = await ask(L.ask[2], t => match(t, L.sizes));
+    const phone = await ask(L.ask[3], t => t.replace(/\D/g, "").length >= 5 && t.replace(/[^\d+]/g, ""));
+    const body = { name, phone, item, size };
+    $("#form").textContent = "POST /orders " + JSON.stringify(body);
+    const res = await fetch("/orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const data = await res.json();
+    await speak(res.ok ? data.message : data.error);   // errors come from Cham, already in the app's language
+  } catch (e) { if (e !== "gave up") $("#warn").textContent = String(e); }
+  busy = false; $("#mic").classList.remove("on");
+}
+
+(async () => {
+  const lang = (await (await fetch("/lang")).json()).message;
+  L = T[lang] || T.en;
+  document.documentElement.lang = lang;
+  $("#mic").textContent = L.start;
+  if (!SR) { $("#warn").textContent = L.nomic; $("#mic").disabled = true; return; }
+  $("#mic").onclick = order;
+})();
+</script>

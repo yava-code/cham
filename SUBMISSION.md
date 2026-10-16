@@ -197,3 +197,34 @@ every message, from a typo in your script to a missing form field, comes in
 Ukrainian, Russian or English and says what to change. The language has
 fourteen keywords, so a beginner can read the whole program. It is open
 source under MIT, and adding a language means filling one table.
+
+---
+
+## Bolna x Symphony Voice Buildathon
+
+https://www.bolna.ai/symphony/buildathon · any project with voice qualifies.
+Rules not checked in full; read the form before pasting.
+
+- **Team size:** 1
+- **Project name:** Cham (voice-shawarma demo)
+- **Idea decided:** yes
+- **Working on it since:** Oct 15, 2026 (voice layer added Oct 17)
+- **Repo:** https://github.com/yava-code/cham
+
+**What it builds**
+Cham is a small backend language for beginners: ten words, one binary, errors
+in Ukrainian, Russian or English. For this buildathon I added a voice front
+end to one demo. A shawarma stand's order page asks four questions out loud,
+listens to the answers, posts the order to the Cham route and reads the reply
+back.
+
+**Where voice is used**
+Input: the browser's SpeechRecognition turns each spoken answer (name, item,
+size, phone) into a field of the order. Output: speechSynthesis reads Cham's
+reply, and Cham's own localized error messages, in the language the app is
+set to. The same route also takes typed requests, so the voice page adds no
+server code.
+
+**Honest limits**
+Browser speech only (Chrome or Edge, online). No phone calls and no Bolna
+API are used. Recognition of phone numbers in noisy rooms is unreliable.

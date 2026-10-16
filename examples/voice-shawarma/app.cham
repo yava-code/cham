@@ -1,0 +1,24 @@
+# Same shawarma stand, but you order by talking to the page.
+# Change lang to "en" or "ru" and the page listens and speaks that language.
+
+port = 8082
+lang = "uk"
+price = 28                 # zł
+large_extra = 6            # zł on top for a large one
+
+# The page asks which language to speak.
+when someone opens /lang:
+    answer lang
+
+when someone posts /orders:
+    need name, phone, item, size
+    total = price
+    if size == "велика": total = price + large_extra
+    if size == "large": total = price + large_extra
+    if size == "большая": total = price + large_extra
+    time = now
+    order = save name, phone, item, size, total, time to orders
+    answer 201 "Дякуємо, " + name + "! До сплати " + total + " zł.", order
+
+when someone opens /orders:
+    answer all orders

@@ -77,3 +77,17 @@ for l in en uk ru; do CHAM_LANG=$l ./target/release/cham /tmp/bad.cham; done
 - Total spoken text is about 450 words. At a calm pace it fits 4:00. Trim the problem section first if you run long.
 - Use `07-lower-third.html?t=Varfolomiy%20Yasenoviy&s=CS%20student%2C%20Warsaw` over the first seconds of the editor shot. Press T for transparent, or load it with `#clear`.
 - For Kiroween, spend more of 1:25 to 3:25 on "one engine, two apps": put both `app.cham` files side by side for five seconds.
+
+## Voice cut (Bolna x Symphony buildathon)
+
+Add 30 to 40 seconds after the second domain, or replace the lab part.
+Start `./target/release/cham examples/voice-shawarma` and open
+`localhost:8082` in Chrome. Allow the microphone once before recording.
+
+1. Show the 14-line `examples/voice-shawarma/app.cham`. "Same language, same ten words."
+2. Press the mic and answer out loud: name, "гостра", "велика", a phone number. Let the audience hear the questions.
+3. Show the `POST /orders` line the page prints, then the spoken total.
+4. Press the mic again, stay silent or say a bad phone: the page gives up, so instead run
+   `curl -H 'Content-Type: application/json' localhost:8082/orders -d '{"name":"A"}'`
+   and have the page's error read aloud by ordering once with the phone step skipped in code, or just show the JSON error and say that the page speaks this text.
+5. Say what is true: the speech comes from the browser, Cham only supplies the route and the message text.
