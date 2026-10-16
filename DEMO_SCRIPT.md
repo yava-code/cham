@@ -87,7 +87,6 @@ Start `./target/release/cham examples/voice-shawarma` and open
 1. Show the 14-line `examples/voice-shawarma/app.cham`. "Same language, same ten words."
 2. Press the mic and answer out loud: name, "гостра", "велика", a phone number. Let the audience hear the questions.
 3. Show the `POST /orders` line the page prints, then the spoken total.
-4. Press the mic again, stay silent or say a bad phone: the page gives up, so instead run
-   `curl -H 'Content-Type: application/json' localhost:8082/orders -d '{"name":"A"}'`
-   and have the page's error read aloud by ordering once with the phone step skipped in code, or just show the JSON error and say that the page speaks this text.
+4. Show an error read aloud: press the mic and skip a question three times. For a spoken Cham error, run
+   `curl -H 'Content-Type: application/json' localhost:8082/orders -d '{"name":"A"}'` and show the Ukrainian JSON error. Say that the page reads this same text with speechSynthesis when a post fails.
 5. Say what is true: the speech comes from the browser, Cham only supplies the route and the message text.
